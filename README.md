@@ -1,4 +1,4 @@
 flickring
 =========
 
-Daemon that syncs flickr account to a mapped folder in the file system
+Daemon that syncs a folder in the file system to our flickr account.
