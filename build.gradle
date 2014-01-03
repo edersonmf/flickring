@@ -1,0 +1,27 @@
+import org.apache.tools.ant.filters.*
+
+apply plugin: 'java'
+
+group = 'com.emf.flickring'
+repositories {
+  mavenCentral()
+  maven {
+    url "http://jcenter.bintray.com"
+  }
+}
+dependencies {
+  compile group: 'org.projectlombok', name: 'lombok', version: "${depLombokVersion}"
+  compile group: 'com.google.guava', name: 'guava', version: "${depGuavaVersion}"
+  compile group: 'com.google.inject', name: 'guice', version: "${depGuiceVersion}"
+  compile group: 'com.flickr4java', name: 'flickr', version: "${depFlickr4javaVersion}"
+  compile group: 'org.slf4j', name: 'slf4j-jdk14', version: "${depSl4jVersion}"
+  compile group: 'commons-configuration', name: 'commons-configuration', version: "${depCommonsConfVersion}"
+  compile group: 'org.apache.commons', name: 'commons-daemon', version: "${depApacheDaemonVerion}"
+  testCompile group: 'org.testng', name: 'testng', version: "${depTestNGVersion}"
+}
+
+/*processResources {
+  filter ReplaceTokens, tokens: [
+    "application.version": project.property("version")
+  ]
+}*/
