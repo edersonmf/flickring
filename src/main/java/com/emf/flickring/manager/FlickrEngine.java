@@ -1,8 +1,9 @@
 package com.emf.flickring.manager;
 
-import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
@@ -11,10 +12,12 @@ import com.emf.flickring.Command.Response;
 import com.emf.flickring.Engine;
 import com.google.inject.Inject;
 
+@Slf4j
 public class FlickrEngine implements Engine {
 
-  private final EngineHandler handler;
+  private final Handler handler;
   private final ExecutorService executor;
+  private Future<Handler> futureHandler;
 
   @Inject
   public FlickrEngine(final Chain chain) {
@@ -24,12 +27,19 @@ public class FlickrEngine implements Engine {
 
   @Override
   public void start() {
-    executor.execute(handler);
+    futureHandler = executor.submit(handler, handler);
   }
 
   @Override
   public void stop() {
     executor.shutdown();
+    try {
+      futureHandler.get().stop();
+    } catch (InterruptedException e) {
+      log.error("Handler got interrupted.", e);
+    } catch (ExecutionException e) {
+      log.error("Could not execute handler.", e);
+    }
   }
 
   @Override
@@ -38,15 +48,11 @@ public class FlickrEngine implements Engine {
   }
 
   @Slf4j
-  private static class EngineHandler implements Runnable {
+  private static class EngineHandler implements Handler {
     private final Chain chain;
     
     public EngineHandler(final Chain chain) {
       this.chain = chain;
-    }
-
-    public void release() {
-      chain.releaseResources();
     }
 
     @Override
@@ -55,6 +61,15 @@ public class FlickrEngine implements Engine {
       final Response response = chain.execute();
       log.debug("Execution chain has completed: {}", response);
     }
+
+    @Override
+    public void stop() {
+      chain.finalize();
+    }
+  }
+
+  private interface Handler extends Runnable {
+    void stop();
   }
 
 }
