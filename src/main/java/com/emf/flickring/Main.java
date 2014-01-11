@@ -21,12 +21,10 @@ public class Main implements Daemon {
   public static void main(final String[] args) throws DaemonInitException, Exception {
     final Main main = new Main();
     main.init(new DaemonContext() {
-      
       @Override
       public DaemonController getController() {
         return null;
       }
-      
       @Override
       public String[] getArguments() {
         return args;
@@ -34,8 +32,8 @@ public class Main implements Daemon {
     });
 
     main.start();
-    main.stop();
-    main.destroy();
+//    main.stop();
+//    main.destroy();
   }
 
   @Override

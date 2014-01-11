@@ -66,8 +66,8 @@ public class DeployModule extends AbstractModule {
     public static final String USER_ID = "flickr.u";
     public static final String BASE_PICS_DIR = "fs.base.pics.dir";
     public static final String NOT_AVAILABLE = "na";
-    public static final String UPLOAD_QUEUE_SIZE = "upload.queue.size";
     public static final String UPLOAD_THREAD_SIZE = "upload.thread.size";
+    public static final String DIR_CONTROLLER_FILE_NAME = ".flickring";
   }
 
 }
