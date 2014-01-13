@@ -9,6 +9,7 @@ repositories {
     url "http://jcenter.bintray.com"
   }
 }
+
 dependencies {
   compile group: 'org.projectlombok', name: 'lombok', version: "${depLombokVersion}"
   compile group: 'com.google.guava', name: 'guava', version: "${depGuavaVersion}"
@@ -16,9 +17,12 @@ dependencies {
   compile group: 'com.flickr4java', name: 'flickr', version: "${depFlickr4javaVersion}"
   compile group: 'org.slf4j', name: 'slf4j-jdk14', version: "${depSl4jVersion}"
   compile group: 'commons-configuration', name: 'commons-configuration', version: "${depCommonsConfVersion}"
-  compile group: 'org.apache.commons', name: 'commons-daemon', version: "${depApacheDaemonVerion}"
+  compile group: 'org.apache.commons', name: 'commons-daemon', version: "${depApacheDaemonVersion}"
   testCompile group: 'org.testng', name: 'testng', version: "${depTestNGVersion}"
+  testCompile group: 'org.mockito', name: 'mockito-core', version: "${depMockitoVersion}"
 }
+
+tasks.test.useTestNG()
 
 /*processResources {
   filter ReplaceTokens, tokens: [

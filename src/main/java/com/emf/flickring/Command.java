@@ -1,5 +1,7 @@
 package com.emf.flickring;
 
+import java.util.EventListener;
+
 import com.emf.flickring.manager.Chain;
 
 public interface Command {
@@ -25,6 +27,11 @@ public interface Command {
       return false;
     }
 
+  }
+
+  public interface ShutdownListener extends EventListener {
+    /** Indicates shutdown action was successful. */
+    boolean shutdown();
   }
 
 }

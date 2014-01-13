@@ -19,13 +19,13 @@ import com.google.common.io.Files;
 @Slf4j
 public class AlbumControllerTest {
 
-  private final AlbumController albumController;
+  private final AlbumConfigHandler albumController;
   private final BlockingQueue<File> queue;
   private final ExecutorService executor;
 
   public AlbumControllerTest() {
     this.queue = new ArrayBlockingQueue<File>(2);
-    this.albumController = new AlbumController(queue);
+    this.albumController = new AlbumConfigHandler(queue);
     this.executor = Executors.newSingleThreadExecutor();
   }
   
@@ -38,7 +38,7 @@ public class AlbumControllerTest {
 
     File pic1 = new File(tempDir,"A1.jpg");
     queue.add(pic1);
-    queue.add(AlbumController.EOQ);
+    queue.add(AlbumConfigHandler.EOQ);
 
     final File controllerFile = new File(pic1.getParent(), Constant.DIR_CONTROLLER_FILE_NAME);
     int count = 0;

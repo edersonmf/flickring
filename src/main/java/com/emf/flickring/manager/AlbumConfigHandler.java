@@ -14,14 +14,14 @@ import com.google.common.base.Strings;
 import com.google.common.io.Files;
 
 @Slf4j
-public class AlbumController implements Runnable {
+public class AlbumConfigHandler implements Runnable {
 
   /** End of queue. Means that no other file will be processed by the queue controller. */
   public static final File EOQ = new File("file://end-of-queue");
 
   private final BlockingQueue<File> queue;
  
-  public AlbumController(final BlockingQueue<File> queue) {
+  public AlbumConfigHandler(final BlockingQueue<File> queue) {
     Preconditions.checkNotNull(queue);
     this.queue = queue;
   }
@@ -79,6 +79,6 @@ public class AlbumController implements Runnable {
     } catch (IOException e) {
       log.error("Could not read controller file", e);
     }
-    return true; // In the case of not being  able to determine if file is uploaded, return TRUEto prevent duplicity.
+    return true; // In the case of not being  able to determine if file is uploaded, return TRUE to prevent duplicity.
   }
 }
