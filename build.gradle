@@ -1,6 +1,17 @@
+buildscript {
+  repositories {
+    jcenter()
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.github.jengelman.gradle.plugins:shadow:0.8'
+  }
+}
+
 import org.apache.tools.ant.filters.*
 
 apply plugin: 'java'
+apply plugin: 'shadow'
 
 group = 'com.emf.flickring'
 repositories {
@@ -23,6 +34,12 @@ dependencies {
 }
 
 tasks.test.useTestNG()
+
+shadow {
+  exclude 'META-INF/*.DSA'
+  exclude 'META-INF/*.RSA'
+  destinationDir = "$buildDir/libs"
+}
 
 /*processResources {
   filter ReplaceTokens, tokens: [

@@ -32,8 +32,8 @@ public class Main implements Daemon {
     });
 
     main.start();
-//    main.stop();
-//    main.destroy();
+    main.stop();
+    main.destroy();
   }
 
   @Override

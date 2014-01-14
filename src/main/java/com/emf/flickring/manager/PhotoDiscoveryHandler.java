@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.ClosedWatchServiceException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -73,15 +74,20 @@ public class PhotoDiscoveryHandler implements Runnable {
   public PhotoDiscoveryHandler(final Configuration config, final Flickr flickr) throws IOException {
     final int threadSize = config.getInt(Constant.UPLOAD_THREAD_SIZE, 3);
     this.config = config;
+    this.baseDir = new File(config.getString(BASE_PICS_DIR));
     this.discoveryHandler = new DiscoveryHandler();
     this.photoHandler = new PhotoHandler(flickr, threadSize);
-    this.baseDir = new File(config.getString(BASE_PICS_DIR));
     this.executor = Executors.newFixedThreadPool(threadSize + 1);
     this.listener = new ShutdownListener() {
       @Override
       public boolean shutdown() {
-        photoHandler.queue.offer(AlbumConfigHandler.EOQ);
-        executor.shutdown();
+        try {
+          photoHandler.queue.offer(AlbumConfigHandler.EOQ);
+          discoveryHandler.watcher.close();
+          executor.shutdown();
+        } catch (IOException e) {
+          log.error("Error closing watcher", e);
+        }
         return true;
       }
     };
@@ -252,6 +258,8 @@ public class PhotoDiscoveryHandler implements Runnable {
             }
           }
         }
+      } catch (ClosedWatchServiceException ex) {
+        log.warn("Close signal received. Discovery handler is going down.");
       } catch (InterruptedException e) {
         log.error("Watcher directory was interrupted.", e);
       }
