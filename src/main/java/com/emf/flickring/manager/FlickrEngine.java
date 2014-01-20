@@ -64,7 +64,7 @@ public class FlickrEngine implements Engine {
 
     @Override
     public void stop() {
-      chain.finalize();
+      chain.breakIt();
     }
   }
 

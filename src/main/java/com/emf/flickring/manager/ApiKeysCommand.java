@@ -16,10 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.FileConfiguration;
+import org.scribe.exceptions.OAuthException;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 
 import com.emf.flickring.Command;
+import com.emf.flickring.deploy.DeployModule;
 import com.emf.flickring.model.ConfigInput;
 import com.flickr4java.flickr.Flickr;
 import com.flickr4java.flickr.FlickrException;
@@ -27,9 +29,12 @@ import com.flickr4java.flickr.RequestContext;
 import com.flickr4java.flickr.auth.Auth;
 import com.flickr4java.flickr.auth.AuthInterface;
 import com.flickr4java.flickr.auth.Permission;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 @Slf4j
 public class ApiKeysCommand implements Command {
@@ -80,7 +85,7 @@ public class ApiKeysCommand implements Command {
       if (Strings.isNullOrEmpty(secret)) {
         final ConfigInput secretKeyInput = ConfigInput.builder().label("Enter your Flickr secret key:").scanner(scanner).build();
         secretKeyInput.read();
-        apikey = secretKeyInput.getInputedValue();
+        secret = secretKeyInput.getInputedValue();
         if (Strings.isNullOrEmpty(secret)) {
           log.warn("Secret key is empty...");
           return END;
@@ -140,10 +145,6 @@ public class ApiKeysCommand implements Command {
         Auth auth;
         try {
           auth = authInterface.checkToken(config.getString(TOKEN), config.getString(SECRET));
-//        final Auth auth = new Auth();
-//          auth.setPermission(Permission.WRITE);
-//          auth.setToken(config.getString(TOKEN));
-//          auth.setTokenSecret(config.getString(SECRET));
           requestContext.setAuth(auth);
           log.info("User is autheticated.");
         } catch (FlickrException e) {
@@ -163,6 +164,8 @@ public class ApiKeysCommand implements Command {
           config.addProperty(BASE_PICS_DIR, basePicsDir);
         }
       }
+    } catch (OAuthException ex) {
+      log.error("Could not authenticate user.", ex);
     } finally {
       scanner.close();
     }
@@ -173,6 +176,25 @@ public class ApiKeysCommand implements Command {
   @Override
   public void stop() {
     // Does nothing
+  }
+
+  public static void main(final String[] args) {
+    Preconditions.checkNotNull(args);
+    Preconditions.checkPositionIndex(0, 1);
+    final Injector injector = Guice.createInjector(new DeployModule(args[0]));
+    final ApiKeysCommand command = injector.getInstance(ApiKeysCommand.class);
+    command.process(new Chain() {
+      
+      @SuppressWarnings("unchecked")
+      @Override
+      public <T> T execute() {
+        return (T) Response.SUCCESS;
+      }
+
+      @Override
+      public void breakIt() {
+      }
+    });
   }
 
 }

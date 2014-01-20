@@ -4,6 +4,6 @@ public interface Chain {
 
   <T>T execute();
 
-  void finalize();
+  void breakIt();
 
 }

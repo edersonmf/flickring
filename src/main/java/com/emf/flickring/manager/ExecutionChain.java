@@ -38,7 +38,7 @@ public class ExecutionChain implements Chain {
   }
 
   @Override
-  public void finalize() {
+  public void breakIt() {
     while (!finalizeStack.isEmpty()) {
       final Command command = finalizeStack.pop();
       command.stop();
