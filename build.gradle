@@ -22,6 +22,10 @@ repositories {
   }
 }
 
+task wrapper(type: Wrapper) {
+  gradleVersion = '1.10'
+}
+
 dependencies {
   compile group: 'org.projectlombok', name: 'lombok', version: "${depLombokVersion}"
   compile group: 'com.google.guava', name: 'guava', version: "${depGuavaVersion}"
