@@ -11,7 +11,6 @@ buildscript {
 import org.apache.tools.ant.filters.*
 
 apply plugin: 'java'
-//apply plugin: 'shadow'
 apply plugin: 'java-library-distribution'
 
 group = 'com.emf.flickring'
@@ -30,7 +29,7 @@ dependencies {
   compile group: 'org.projectlombok', name: 'lombok', version: "${depLombokVersion}"
   compile group: 'com.google.guava', name: 'guava', version: "${depGuavaVersion}"
   compile group: 'com.google.inject', name: 'guice', version: "${depGuiceVersion}"
-  compile group: 'com.flickr4java', name: 'flickr', version: "${depFlickr4javaVersion}"
+  compile group: 'com.flickr4java', name: 'flickr4java', version: "${depFlickr4javaVersion}"
   compile group: 'commons-configuration', name: 'commons-configuration', version: "${depCommonsConfVersion}"
   compile group: 'org.apache.commons', name: 'commons-daemon', version: "${depApacheDaemonVersion}"
   compile group: 'ch.qos.logback', name: 'logback-classic', version: "${depLogbackVersion}"

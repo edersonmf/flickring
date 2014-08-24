@@ -50,6 +50,7 @@ public class ApiKeysCommand implements Command {
 
   @Override
   public Response process(final Chain chain) {
+    log.debug("Running api keys command...");
     String apikey = config.getString(API_KEY, null);
     String secret = config.getString(SECRET_KEY, null);
     String tokenValue = config.getString(TOKEN, null);
@@ -58,6 +59,7 @@ public class ApiKeysCommand implements Command {
 
     final File configFile = config.getFile();
     if (!configFile.exists()) {
+      log.debug("Config file does not exist");
       try {
         Files.touch(configFile);
       } catch (IOException e) {
@@ -70,6 +72,7 @@ public class ApiKeysCommand implements Command {
     try {
       // Check api key
       if (Strings.isNullOrEmpty(apikey)) {
+        log.debug("Api key is null");
         final ConfigInput apiKeyInput = ConfigInput.builder().label("Enter your Flickr api key:").scanner(scanner).build();
         apiKeyInput.read();
         apikey = apiKeyInput.getInputedValue();
@@ -79,10 +82,13 @@ public class ApiKeysCommand implements Command {
         } else {
           config.addProperty(API_KEY, apikey);
         }
+      } else {
+        log.debug("Api key is not null");
       }
   
       // Check secret key
       if (Strings.isNullOrEmpty(secret)) {
+        log.debug("Secret key is null");
         final ConfigInput secretKeyInput = ConfigInput.builder().label("Enter your Flickr secret key:").scanner(scanner).build();
         secretKeyInput.read();
         secret = secretKeyInput.getInputedValue();
@@ -92,6 +98,8 @@ public class ApiKeysCommand implements Command {
         } else {
           config.addProperty(SECRET_KEY, secret);
         }
+      } else {
+        log.debug("Secret key is not null");
       }
 
       // Check token
@@ -101,7 +109,7 @@ public class ApiKeysCommand implements Command {
       flickr.setSharedSecret(config.getString(SECRET_KEY));
       final AuthInterface authInterface = flickr.getAuthInterface();
       if (Strings.isNullOrEmpty(tokenValue)) {
-
+        log.debug("Flickr token is null");
         final Token token = authInterface.getRequestToken();
         final String url = authInterface.getAuthorizationUrl(token, Permission.WRITE);
 
@@ -134,7 +142,7 @@ public class ApiKeysCommand implements Command {
         }
 
         if (requestToken == null || requestToken.isEmpty()) {
-          log.warn("User token is empty...");
+          log.debug("User token is empty...");
           return END;
         } else {
           config.addProperty(TOKEN, requestToken.getToken());
@@ -142,27 +150,30 @@ public class ApiKeysCommand implements Command {
           log.info("Authentication success");
         }
       } else {
+        log.debug("Authenticating flickr user...");
         Auth auth;
         try {
           auth = authInterface.checkToken(config.getString(TOKEN), config.getString(SECRET));
+          log.debug("User is authenticated.");
           requestContext.setAuth(auth);
-          log.info("User is autheticated.");
         } catch (FlickrException e) {
           log.error("Could not authenticate user", e);
         }
       }
 
+      log.debug("Checking base pictures directory");
       // Check base pictures dir
       if (Strings.isNullOrEmpty(basePicsDir)) {
         final ConfigInput basePicsDirInput = ConfigInput.builder().label("Enter your pictures folder location:").scanner(scanner).build();
         basePicsDirInput.read();
         basePicsDir = basePicsDirInput.getInputedValue();
         if (Strings.isNullOrEmpty(basePicsDir)) {
-          log.warn("Base pictures location is empty...");
+          log.error("Base pictures location is empty...");
           return END;
         } else {
           config.addProperty(BASE_PICS_DIR, basePicsDir);
         }
+        log.debug("Base picture dir: {}", basePicsDir);
       }
     } catch (OAuthException ex) {
       log.error("Could not authenticate user.", ex);
@@ -170,6 +181,7 @@ public class ApiKeysCommand implements Command {
       scanner.close();
     }
 
+    log.debug("Calling next in charge in the chain...");
     return chain.execute();
   }
 

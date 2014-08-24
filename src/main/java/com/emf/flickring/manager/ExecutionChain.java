@@ -25,6 +25,7 @@ public class ExecutionChain implements Chain {
   @SuppressWarnings("unchecked")
   @Override
   public <T> T execute() {
+    log.debug("Chain execution staterd...");
     if (!commandsStack.isEmpty()) {
       final Command command = commandsStack.pop();
       final Response response = command.process(this);

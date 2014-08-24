@@ -22,7 +22,7 @@ public class SyncCommand implements Command {
 
   @Override
   public Response process(final Chain chain) {
-    log.info("Processing Sync Command.");
+    log.debug("Processing Sync Command.");
     this.executor.execute(handler);
     return chain.execute();
   }
