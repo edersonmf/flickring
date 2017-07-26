@@ -56,7 +56,7 @@ public class DeployModule extends AbstractModule {
   }
 
   public static final class Constant {
-    private static final String DEFAULT_CONF_FOLDER = "/etc/flickring";
+    private static final String DEFAULT_CONF_FOLDER = "/opt/flickring/resources";
     private static final String DEFAULT_CONF_FILE_NAME = "flickring.conf";   
 
     public static final String API_KEY = "flickr.apikey";

@@ -192,7 +192,7 @@ public class ApiKeysCommand implements Command {
 
   public static void main(final String[] args) {
     Preconditions.checkNotNull(args);
-    Preconditions.checkPositionIndex(0, 1);
+    Preconditions.checkArgument(args.length > 0);
     final Injector injector = Guice.createInjector(new DeployModule(args[0]));
     final ApiKeysCommand command = injector.getInstance(ApiKeysCommand.class);
     command.process(new Chain() {
@@ -200,11 +200,13 @@ public class ApiKeysCommand implements Command {
       @SuppressWarnings("unchecked")
       @Override
       public <T> T execute() {
+        log.info("API Keys Command is success");
         return (T) Response.SUCCESS;
       }
 
       @Override
       public void breakIt() {
+        log.info("API Keys Command has failed");
       }
     });
   }

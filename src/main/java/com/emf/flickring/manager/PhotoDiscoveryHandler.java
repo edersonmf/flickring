@@ -235,6 +235,11 @@ public class PhotoDiscoveryHandler implements Runnable {
 
             log.info("{}: {}", event.kind().name(), child);
 
+            if (child.endsWith(Constant.DIR_CONTROLLER_FILE_NAME)) {
+              log.info("Ignoring file: {}", child);
+              continue;
+            }
+
             if ((kind == ENTRY_CREATE)) {
               try {
                 if (Files.isDirectory(child, NOFOLLOW_LINKS)) {

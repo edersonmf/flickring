@@ -5,3 +5,7 @@ test-output/
 .gradle/
 .classpath
 .project
+.idea
+.DS_Store
+out/
+*.iml

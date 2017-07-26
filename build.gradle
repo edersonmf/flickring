@@ -1,19 +1,16 @@
 buildscript {
-  repositories {
-    jcenter()
-    mavenCentral()
-  }
+  repositories { jcenter() }
   dependencies {
-    classpath 'com.github.jengelman.gradle.plugins:shadow:0.8'
+    classpath 'com.netflix.nebula:nebula-release-plugin:6.0.0'
   }
 }
 
-import org.apache.tools.ant.filters.*
-
+apply plugin: 'nebula.release'
 apply plugin: 'java'
-apply plugin: 'java-library-distribution'
+apply plugin: 'application'
 
 group = 'com.emf.flickring'
+
 repositories {
   mavenCentral()
   maven {
@@ -22,7 +19,7 @@ repositories {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '1.10'
+  gradleVersion = '3.4.1'
 }
 
 dependencies {
@@ -31,42 +28,27 @@ dependencies {
   compile group: 'com.google.inject', name: 'guice', version: "${depGuiceVersion}"
   compile group: 'com.flickr4java', name: 'flickr4java', version: "${depFlickr4javaVersion}"
   compile group: 'commons-configuration', name: 'commons-configuration', version: "${depCommonsConfVersion}"
-  compile group: 'org.apache.commons', name: 'commons-daemon', version: "${depApacheDaemonVersion}"
   compile group: 'ch.qos.logback', name: 'logback-classic', version: "${depLogbackVersion}"
   testCompile group: 'org.testng', name: 'testng', version: "${depTestNGVersion}"
   testCompile group: 'org.mockito', name: 'mockito-core', version: "${depMockitoVersion}"
 }
 
+mainClassName = "com.emf.flickring.Main"
+
 distributions {
   main {
     contents {
-      from {
-        'src/main/bin'
+      from('src/main/config') {
+        into 'resources'
       }
     }
   }
 }
 
-jar {
-  manifest {
-    def classpath = configurations.runtime.collect { 'lib/' + it.name }.join(' ')
-    attributes('Main-Class': 'com.emf.flickring.manager.ApiKeysCommand',
-      "Class-Path": classpath)
-  }
+distTar {
+  compression = Compression.GZIP
 }
 
 test {
   useTestNG()
 }
-/*
-shadow {
-  exclude 'META-INF/*.DSA'
-  exclude 'META-INF/*.RSA'
-  destinationDir = "$buildDir/libs"
-}
-/*
-/*processResources {
-  filter ReplaceTokens, tokens: [
-    "application.version": project.property("version")
-  ]
-}*/

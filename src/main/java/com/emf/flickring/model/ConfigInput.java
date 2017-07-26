@@ -2,8 +2,8 @@ package com.emf.flickring.model;
 
 import java.util.Scanner;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.Builder;
 
 @Builder
 public class ConfigInput {
